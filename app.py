@@ -3,7 +3,7 @@ import requests
 import json
 
 # API Gateway GET endpoint
-API_URL = "https://v98yls4aeg.execute-api.us-east-1.amazonaws.com/dev/kbquery"
+API_URL = "<api-gateway-endpoint"
 
 st.set_page_config(page_title="CaseCrux KB Assistant", page_icon="🧠")
 st.title("CaseCrux with Amazon Bedrock")
