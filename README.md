@@ -1,408 +1,146 @@
+# CaseCrux: AI-Powered Question Answering with Amazon Bedrock
 
-# CaseCrux: Intelligent Legal Assistant - Revolutionizing Legal Practice with AWS Lambda
+CaseCrux is a Streamlit-based web application that leverages Amazon Bedrock to provide intelligent question-answering capabilities. It enables users to ask questions and receive contextually relevant answers powered by advanced language models, with source attribution and context visualization.
 
-## 🏆 Executive Summary
+The application uses a serverless architecture with AWS Lambda functions and API Gateway to interact with Amazon Bedrock's knowledge base system. The frontend provides a chat-like interface while the backend handles knowledge base queries and automatic synchronization of new content.
 
-**CaseCrux** is an innovative AI-powered legal assistant that transforms how legal practitioners access, analyze, and utilize legal knowledge. Built entirely on AWS serverless architecture with Lambda at its core, this application demonstrates the power of modern cloud computing in delivering intelligent, scalable, and cost-effective legal technology solutions.
-
-## 🎯 Problem Statement & Purpose
-
-### The Legal Industry Challenge
-- **Information Overload**: Legal professionals spend 60% of their time searching through vast legal documents
-- **Knowledge Fragmentation**: Critical legal precedents scattered across multiple sources
-- **Time-to-Insight**: Delayed decision-making due to inefficient information retrieval
-- **Cost Inefficiency**: High operational costs for legal research and document analysis
-
-### Our Solution: CaseCrux
-CaseCrux addresses these challenges by providing an intelligent, conversational interface that instantly retrieves relevant legal information from a comprehensive knowledge base, enabling lawyers to:
-- **Reduce research time by 80%**
-- **Access contextual legal precedents instantly**
-- **Make informed decisions faster**
-- **Lower operational costs significantly**
-
-## 🏗️ Architecture Overview
-
-### AWS Services Integration
-
+## Repository Structure
 ```
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   Route 53      │    │   Streamlit App  │    │  API Gateway    │
-│  (Custom Domain)│────│  (Frontend UI)   │────│   (REST API)    │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-                                                         │
-                                                         ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                    AWS Lambda Function                          │
-│                 (Query Processing Engine)                       │
-└─────────────────────────────────────────────────────────────────┘
-                                │
-                                ▼
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│  Amazon Bedrock │    │   Knowledge Base │    │   OpenSearch    │
-│  (LLM Service)  │────│   (RAG System)   │────│  (Vector Store) │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-                                │                        ▲
-                                ▼                        │
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   Amazon S3     │    │  Titan Embedding │    │  Lambda Function│
-│ (Document Store)│────│     (Model)      │────│  (Auto-Sync)    │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-         │                                               ▲
-         └───────────────────────────────────────────────┘
-                    (S3 Object Update Trigger)
+.
+├── app.py                        # Streamlit frontend application
+├── primary_lambda_function.py    # Main Lambda function for Bedrock interaction
+├── autosync_lambda_function.py   # Lambda function for KB auto-synchronization
+├── AWS_Architecture_Diagram.md   # Detailed AWS architecture documentation
+├── CaseCrux_Hackathon_Article.md # Project overview and implementation details
+├── requirements.txt              # Python package dependencies
+└── run.py                       # Legacy entry point (deprecated)
 ```
 
-## 🚀 AWS Lambda: The Heart of CaseCrux
+## Additional Documentation
+- **AWS_Architecture_Diagram.md**: Contains detailed diagrams and explanations of the AWS serverless architecture used in the project
+- **CaseCrux_Hackathon_Article.md**: Provides comprehensive information about the project's development, implementation details, and use cases
 
-### Primary Lambda Function: Query Processing Engine
-**Role**: Core intelligence processing unit that orchestrates the entire legal query workflow
+## Prerequisites
+- Python 3.6 or higher
+- AWS account with access to Amazon Bedrock service
+- AWS credentials (Access Key and Secret Key)
+- AWS region where Bedrock service is available
 
-**Key Responsibilities**:
-- **Request Orchestration**: Manages incoming API Gateway requests
-- **Bedrock Integration**: Interfaces with Amazon Bedrock for natural language processing
-- **Knowledge Base Querying**: Retrieves contextually relevant legal documents
-- **Response Formatting**: Structures responses with answers, context, and source references
+Required environment variables:
+- AWS_ACCESS_KEY
+- AWS_SECRET_KEY
+- AWS_REGION
 
-**Performance Metrics**:
-- **Cold Start**: < 2 seconds
-- **Warm Execution**: < 500ms
-- **Concurrent Executions**: Auto-scaling up to 1000
-- **Cost Efficiency**: Pay-per-request model reduces costs by 70%
+### Installation
 
-### Secondary Lambda Function: Auto-Sync Engine
-**Role**: Maintains knowledge base freshness through automated document processing
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd casecrux
+```
 
-**Key Responsibilities**:
-- **S3 Event Processing**: Triggered by document uploads/updates
-- **Embedding Generation**: Processes new documents through Titan Embedding
-- **Vector Store Updates**: Automatically updates OpenSearch indices
-- **Metadata Management**: Maintains document relationships and versioning
+2. Create and activate a virtual environment:
+```bash
+# MacOS/Linux
+python -m venv venv
+source venv/bin/activate
 
-## 🛡️ AWS Best Practices Implemented
+# Windows
+python -m venv venv
+.\venv\Scripts\activate
+```
 
-### 1. **Serverless-First Architecture**
-- **Zero Server Management**: Complete elimination of infrastructure overhead
-- **Auto-Scaling**: Seamless handling of variable workloads
-- **High Availability**: Built-in redundancy across multiple AZs
+3. Install required dependencies:
+```bash
+pip install -r requirements.txt
+```
 
-### 2. **Security Excellence**
-- **IAM Least Privilege**: Granular permissions for each service
-- **API Gateway Authentication**: Secure endpoint access
-- **VPC Integration**: Network isolation for sensitive operations
-- **Encryption**: Data encrypted at rest (S3) and in transit (API Gateway)
+4. Create a `.env` file in the root directory with your AWS credentials:
+```
+AWS_ACCESS_KEY=your_access_key
+AWS_SECRET_KEY=your_secret_key
+AWS_REGION=your_aws_region
+```
 
-### 3. **Cost Optimization**
-- **Pay-per-Use Model**: Lambda charges only for actual execution time
-- **S3 Intelligent Tiering**: Automatic cost optimization for document storage
-- **Reserved Capacity**: OpenSearch reserved instances for predictable workloads
-- **CloudWatch Monitoring**: Proactive cost and performance monitoring
-
-### 4. **Operational Excellence**
-- **Infrastructure as Code**: CloudFormation templates for reproducible deployments
-- **Automated Testing**: Lambda function unit and integration tests
-- **Monitoring & Alerting**: CloudWatch dashboards and alarms
-- **Logging**: Comprehensive logging with CloudWatch Logs
-
-### 5. **Performance Optimization**
-- **Connection Pooling**: Reused database connections in Lambda
-- **Caching Strategy**: API Gateway response caching
-- **Asynchronous Processing**: Non-blocking operations for better user experience
-- **Memory Optimization**: Right-sized Lambda memory allocation
-
-## 💼 Commercial Value Proposition
-
-### For Legal Firms
-- **ROI**: 300% return on investment within 6 months
-- **Time Savings**: 15-20 hours per lawyer per week
-- **Accuracy Improvement**: 95% reduction in research errors
-- **Client Satisfaction**: Faster case resolution and better outcomes
-
-### For Individual Practitioners
-- **Competitive Edge**: Access to enterprise-level legal intelligence
-- **Cost Reduction**: 80% lower than traditional legal research tools
-- **24/7 Availability**: Round-the-clock access to legal insights
-- **Scalability**: Grows with practice size and complexity
-
-### Market Impact
-- **Addressable Market**: $8.2B legal technology market
-- **Target Segment**: 1.3M legal professionals in the US
-- **Expansion Potential**: International markets and adjacent industries
-- **Partnership Opportunities**: Integration with existing legal software
-
-## 🔧 Technical Innovation Highlights
-
-### 1. **Intelligent Document Processing**
+5. Configure API Gateway endpoint in app.py:
 ```python
-# Lambda function snippet for document processing
-def process_legal_document(event, context):
-    # Extract document from S3
-    document = extract_from_s3(event['Records'][0]['s3'])
-    
-    # Generate embeddings using Titan
-    embeddings = generate_embeddings(document)
-    
-    # Store in OpenSearch
-    store_in_vector_db(embeddings, document_metadata)
-    
-    return {"statusCode": 200, "body": "Document processed successfully"}
+API_URL = "your_api_gateway_endpoint"
 ```
 
-### 2. **RAG (Retrieval-Augmented Generation) Implementation**
-- **Semantic Search**: Vector similarity matching for relevant document retrieval
-- **Context Injection**: Relevant legal precedents injected into LLM prompts
-- **Source Attribution**: Transparent citation of source documents
-- **Confidence Scoring**: Reliability metrics for each response
+### Quick Start
 
-### 3. **Real-time Knowledge Base Synchronization**
-- **Event-Driven Updates**: S3 object events trigger immediate processing
-- **Incremental Indexing**: Only new/changed documents are processed
-- **Version Control**: Maintains document history and change tracking
-- **Conflict Resolution**: Handles concurrent updates gracefully
-
-## 📊 Performance Metrics & Results
-
-### System Performance
-- **Query Response Time**: Average 1.2 seconds
-- **Accuracy Rate**: 94% for legal precedent matching
-- **Uptime**: 99.9% availability
-- **Scalability**: Handles 10,000+ concurrent users
-
-### Business Impact
-- **User Adoption**: 89% user retention rate
-- **Productivity Gain**: 65% improvement in research efficiency
-- **Cost Savings**: $50,000 annual savings per legal team
-- **Client Satisfaction**: 4.8/5 average rating
-
-## 🌟 Unique Differentiators
-
-### 1. **Serverless Excellence**
-- **True Serverless**: No server management overhead
-- **Event-Driven**: Reactive architecture for optimal resource utilization
-- **Auto-Scaling**: Seamless handling of traffic spikes
-
-### 2. **AI-Powered Intelligence**
-- **Advanced NLP**: Bedrock's state-of-the-art language models
-- **Contextual Understanding**: Deep comprehension of legal terminology
-- **Continuous Learning**: Knowledge base grows with usage
-
-### 3. **Domain Expertise**
-- **Legal-Specific**: Purpose-built for legal professionals
-- **Precedent Matching**: Intelligent case law correlation
-- **Citation Accuracy**: Reliable source attribution
-
-## 🚀 Future Roadmap
-
-### Phase 1: Enhanced Intelligence (Q2 2024)
-- **Multi-Modal Support**: Document image and audio processing
-- **Advanced Analytics**: Legal trend analysis and predictions
-- **Collaborative Features**: Team-based knowledge sharing
-
-### Phase 2: Market Expansion (Q3 2024)
-- **International Law**: Support for multiple legal systems
-- **Industry Verticals**: Specialized modules for different practice areas
-- **API Marketplace**: Third-party integrations and extensions
-
-### Phase 3: Enterprise Scale (Q4 2024)
-- **Enterprise SSO**: Advanced authentication and authorization
-- **Compliance Suite**: SOC2, HIPAA, and other certifications
-- **White-Label Solutions**: Customizable deployments for large firms
-
-## 🏅 Why CaseCrux Deserves to Win
-
-### Technical Excellence
-- **Innovative Architecture**: Cutting-edge serverless design
-- **AWS Best Practices**: Exemplary implementation of cloud principles
-- **Scalable Solution**: Production-ready architecture
-
-### Business Impact
-- **Real-World Problem**: Addresses genuine industry pain points
-- **Measurable ROI**: Quantifiable business value
-- **Market Potential**: Significant commercial opportunity
-
-### AWS Lambda Showcase
-- **Lambda-Centric**: Demonstrates Lambda's versatility and power
-- **Service Integration**: Seamless orchestration of multiple AWS services
-- **Cost Efficiency**: Optimal resource utilization and cost management
-
-## 🎯 Conclusion
-
-CaseCrux represents the future of legal technology, demonstrating how AWS Lambda and serverless architecture can transform traditional industries. By combining the power of AI, the scalability of cloud computing, and the efficiency of serverless design, we've created a solution that not only solves real-world problems but also showcases the incredible potential of AWS Lambda in building intelligent, scalable, and cost-effective applications.
-
-This project exemplifies the best of AWS serverless computing, proving that with the right architecture and implementation, Lambda can be the foundation for enterprise-grade, AI-powered applications that deliver exceptional value to users and businesses alike.
-
----
-
-# Appendix - CaseCrux AWS Architecture Diagram
-
-## Detailed Architecture Flow
-
-```mermaid
-graph TB
-    %% User Interface Layer
-    User[👤 Legal Practitioner] --> Domain[🌐 Custom Domain<br/>Route 53]
-    Domain --> Streamlit[🖥️ Streamlit Frontend<br/>CaseCrux Interface]
-    
-    %% API Layer
-    Streamlit --> APIGW[🚪 API Gateway<br/>REST Endpoint<br/>v98yls4aeg.execute-api.us-east-1.amazonaws.com]
-    
-    %% Core Processing Layer
-    APIGW --> Lambda1[⚡ AWS Lambda Function<br/>Query Processing Engine<br/>• Request Orchestration<br/>• Bedrock Integration<br/>• Response Formatting]
-    
-    %% AI & Knowledge Layer
-    Lambda1 --> Bedrock[🧠 Amazon Bedrock<br/>LLM Service<br/>• Natural Language Processing<br/>• Intelligent Response Generation]
-    Lambda1 --> KB[📚 Knowledge Base<br/>RAG System<br/>• Semantic Search<br/>• Context Retrieval]
-    
-    %% Vector Database Layer
-    KB --> OpenSearch[🔍 Amazon OpenSearch<br/>Vector Database<br/>• Embedding Storage<br/>• Similarity Search<br/>• Fast Retrieval]
-    
-    %% Document Storage Layer
-    KB --> S3[📦 Amazon S3<br/>Document Repository<br/>• Legal Documents<br/>• Case Files<br/>• Precedents]
-    
-    %% Embedding Processing
-    S3 --> Titan[🎯 Titan Embedding Model<br/>Text Vectorization<br/>• Document Processing<br/>• Vector Generation]
-    Titan --> OpenSearch
-    
-    %% Auto-Sync System
-    S3 --> S3Event[📡 S3 Object Update Event<br/>Automatic Trigger]
-    S3Event --> Lambda2[⚡ AWS Lambda Function<br/>Auto-Sync Engine<br/>• Document Processing<br/>• Embedding Generation<br/>• Index Updates]
-    Lambda2 --> Titan
-    Lambda2 --> OpenSearch
-    
-    %% Monitoring & Security
-    CloudWatch[📊 CloudWatch<br/>Monitoring & Logging] -.-> Lambda1
-    CloudWatch -.-> Lambda2
-    CloudWatch -.-> APIGW
-    
-    IAM[🔐 IAM Roles & Policies<br/>Security & Access Control] -.-> Lambda1
-    IAM -.-> Lambda2
-    IAM -.-> S3
-    IAM -.-> OpenSearch
-    
-    %% Styling
-    classDef userLayer fill:#e1f5fe,stroke:#01579b,stroke-width:2px
-    classDef apiLayer fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
-    classDef computeLayer fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
-    classDef aiLayer fill:#fff3e0,stroke:#e65100,stroke-width:2px
-    classDef storageLayer fill:#fce4ec,stroke:#880e4f,stroke-width:2px
-    classDef monitoringLayer fill:#f1f8e9,stroke:#33691e,stroke-width:2px
-    
-    class User,Domain,Streamlit userLayer
-    class APIGW apiLayer
-    class Lambda1,Lambda2 computeLayer
-    class Bedrock,KB,Titan aiLayer
-    class S3,OpenSearch storageLayer
-    class CloudWatch,IAM monitoringLayer
+1. Start the application:
+```bash
+streamlit run app.py
 ```
 
-## Data Flow Sequence
+2. Open your web browser and navigate to the URL displayed in the terminal (typically http://localhost:8501)
 
-```mermaid
-sequenceDiagram
-    participant U as User
-    participant S as Streamlit App
-    participant AG as API Gateway
-    participant L1 as Lambda (Query)
-    participant BR as Bedrock
-    participant KB as Knowledge Base
-    participant OS as OpenSearch
-    participant S3 as S3 Bucket
-    participant L2 as Lambda (Sync)
-    participant TE as Titan Embedding
-    
-    %% User Query Flow
-    U->>S: Enter legal question
-    S->>AG: GET request with prompt
-    AG->>L1: Invoke Lambda function
-    L1->>KB: Query knowledge base
-    KB->>OS: Vector similarity search
-    OS-->>KB: Relevant documents
-    KB-->>L1: Context + metadata
-    L1->>BR: Generate response with context
-    BR-->>L1: AI-generated answer
-    L1-->>AG: Formatted response
-    AG-->>S: JSON response
-    S-->>U: Display answer + sources
-    
-    %% Document Sync Flow (Parallel)
-    Note over S3,L2: Document Upload/Update
-    S3->>L2: S3 Object Update Event
-    L2->>S3: Retrieve new document
-    L2->>TE: Generate embeddings
-    TE-->>L2: Vector embeddings
-    L2->>OS: Update vector index
-    L2->>KB: Update metadata
+3. Enter your question in the chat input field and press Enter to receive an answer
+
+### More Detailed Examples
+
+1. Basic Question-Answer:
+```python
+# Enter a question in the chat input
+question = "What is the capital of France?"
+# The system will display the answer with relevant context and source
 ```
 
-## Component Details
+2. Clearing Chat History:
+- Click the "Clear Chat History" button in the sidebar to reset the conversation
 
-### 🌐 **Frontend Layer**
-- **Route 53**: Custom domain management and DNS routing
-- **Streamlit**: Interactive web interface for legal practitioners
-- **Features**: Chat interface, history management, source attribution
+### Troubleshooting
 
-### 🚪 **API Layer**
-- **API Gateway**: RESTful endpoint management
-- **Security**: Request validation and rate limiting
-- **Caching**: Response caching for improved performance
+Common Issues:
 
-### ⚡ **Compute Layer (AWS Lambda)**
-#### Primary Lambda Function
-- **Runtime**: Python 3.9
-- **Memory**: 1024 MB
-- **Timeout**: 30 seconds
-- **Concurrency**: 1000 concurrent executions
+1. AWS Credentials Error
+```
+botocore.exceptions.NoCredentialsError: Unable to locate credentials
+```
+Solution:
+- Verify your AWS credentials in the `.env` file
+- Ensure the environment variables are properly loaded
+- Check if your AWS credentials have the necessary permissions for Bedrock service
 
-#### Auto-Sync Lambda Function
-- **Runtime**: Python 3.9
-- **Memory**: 512 MB
-- **Timeout**: 5 minutes
-- **Trigger**: S3 Object Created/Updated events
+2. Streamlit Connection Issues
+```
+Connection error: Connection refused
+```
+Solution:
+- Ensure no other application is using port 8501
+- Try running streamlit with a different port:
+```bash
+streamlit run run.py --server.port 8502
+```
 
-### 🧠 **AI & Intelligence Layer**
-- **Amazon Bedrock**: Large Language Model service
-- **Knowledge Base**: RAG (Retrieval-Augmented Generation) system
-- **Titan Embedding**: Text vectorization for semantic search
+3. Knowledge Base Response Issues
+- If you receive "No Context" messages:
+  * Verify that the knowledge base ID is correct
+  * Ensure the question is relevant to the knowledge base content
+  * Check if the Bedrock model ARN is correct and accessible
 
-### 🔍 **Data Layer**
-- **Amazon S3**: Document storage with versioning
-- **OpenSearch**: Vector database for similarity search
-- **Indexing**: Real-time document indexing and retrieval
+## Data Flow
 
-### 📊 **Monitoring & Security**
-- **CloudWatch**: Comprehensive monitoring and logging
-- **IAM**: Fine-grained access control and security policies
-- **VPC**: Network isolation and security
+The application follows a serverless architecture with the following data flow:
 
-## Performance Characteristics
+```ascii
+User Input -> Streamlit UI -> API Gateway -> Primary Lambda -> Bedrock KB -> Response
+                                                                   ^
+S3 Upload -> EventBridge -> AutoSync Lambda --------------------- +
+```
 
-| Component | Latency | Throughput | Scalability |
-|-----------|---------|------------|-------------|
-| API Gateway | < 10ms | 10,000 RPS | Auto-scaling |
-| Lambda (Query) | < 500ms | 1000 concurrent | Auto-scaling |
-| Lambda (Sync) | < 2s | Event-driven | Auto-scaling |
-| OpenSearch | < 100ms | 1000 QPS | Horizontal scaling |
-| S3 | < 50ms | Unlimited | Virtually unlimited |
+Key Component Interactions:
+1. Frontend (app.py):
+   - Handles user interface and chat history
+   - Makes API calls to Lambda through API Gateway
 
-## Cost Optimization Features
+2. Primary Lambda (primary_lambda_function.py):
+   - Processes incoming questions
+   - Interacts with Bedrock knowledge base
+   - Returns formatted responses with context
 
-- **Lambda**: Pay-per-request pricing model
-- **S3**: Intelligent tiering for cost optimization
-- **OpenSearch**: Reserved instances for predictable workloads
-- **API Gateway**: Caching to reduce backend calls
-- **CloudWatch**: Cost monitoring and alerting
-
-## Security Implementation
-
-- **Encryption at Rest**: S3 and OpenSearch data encryption
-- **Encryption in Transit**: HTTPS/TLS for all communications
-- **IAM Policies**: Least privilege access control
-- **API Authentication**: Secure endpoint access
-- **VPC Integration**: Network-level security isolation
-
----
-
-*This architecture demonstrates the power of AWS serverless computing in building intelligent, scalable, and cost-effective AI applications.*
-
-**Built with ❤️ using AWS Lambda, Amazon Bedrock, and the power of serverless computing.**
-
-*Ready to revolutionize legal practice? CaseCrux is here to lead the transformation.*
+3. AutoSync Lambda (autosync_lambda_function.py):
+   - Triggered by S3 uploads
+   - Initiates knowledge base synchronization
+   - Ensures content is always up-to-date
