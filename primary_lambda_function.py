@@ -15,7 +15,7 @@ def lambda_handler(event, context):
             input={'text': user_question},
             retrieveAndGenerateConfiguration={
                 'knowledgeBaseConfiguration': {
-                    'knowledgeBaseId': 'BDWBPCTPZQ',
+                    'knowledgeBaseId': '<knowledgebaseid>',
                     'modelArn': 'arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-v2:1'
                 },
                 'type': 'KNOWLEDGE_BASE'
