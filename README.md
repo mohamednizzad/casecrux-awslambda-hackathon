@@ -4,6 +4,9 @@ CaseCrux is a Streamlit-based web application that leverages Amazon Bedrock to p
 
 The application uses a serverless architecture with AWS Lambda functions and API Gateway to interact with Amazon Bedrock's knowledge base system. The frontend provides a chat-like interface while the backend handles knowledge base queries and automatic synchronization of new content.
 
+## CaseCrux Serverless Architecture
+![CaseCrux Architecture](CaseCrux_Architecture.gif)
+
 ## Repository Structure
 ```
 .
